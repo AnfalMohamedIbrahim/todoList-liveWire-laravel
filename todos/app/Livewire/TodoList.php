@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Todo;
+use Exception;
 use Livewire\Attributes\Rule;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -12,8 +13,10 @@ class TodoList extends Component
 
     use WithPagination;
 
+
 // anotation
     #[Rule('required|min:3|max:50')]
+
     // for the todo name
     public $name;
 
@@ -47,11 +50,22 @@ class TodoList extends Component
 
     session()->flash('success','Todo Created');
 
+    // to return to the first page to see the new todos
+    $this->resetPage();
+
     }
 
     public function delete($todoID){
 
-        Todo::find($todoID)->delete();
+        // to prevent errors especially in production
+     try {
+
+         Todo::findOrfail($todoID)->delete();
+
+     } catch (Exception $e) {
+        session()->flash('error','failed to delete todo');
+        return;
+     }
     }
 
 
