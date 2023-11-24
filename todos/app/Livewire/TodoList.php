@@ -106,7 +106,11 @@ class TodoList extends Component
     {
         return view('livewire.todo-list',[
 
-            'todos'=>Todo::latest()->paginate(3)
+            // 'todos'=>Todo::latest()->paginate(5)
+
+            // to search we can use like and we put .live in the blade to not to use
+            // button click to send requests
+            'todos'=>Todo::latest()->where('name','like',"%{$this->search}%")->paginate(5)
         ]);
     }
 }
